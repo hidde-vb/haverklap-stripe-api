@@ -1,0 +1,10 @@
+{
+  "name": "haverklap-stripe-api",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "express": "^4.17.1",
+    "serverless-http": "^2.7.0",
+    "stripe": "^10.17.0"
+  }
+}

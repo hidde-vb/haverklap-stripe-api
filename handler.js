@@ -16,13 +16,13 @@ app.post("/create-checkout-session", async (req, res) => {
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
-        price: "pr_1234",
+        price: "price_1LzPqIJQikXYBFLjJquHa9my",
         quantity: 1,
       },
     ],
     mode: "payment",
-    success_url: `${process.env.YOUR_DOMAIN}?success=true`,
-    cancel_url: `${process.env.YOUR_DOMAIN}?canceled=true`,
+    success_url: `${process.env.REDIRECT_BASEURL}?success=true`,
+    cancel_url: `${process.env.REDIRECT_BASEURL}?canceled=true`,
   });
 
   res.redirect(303, session.url);

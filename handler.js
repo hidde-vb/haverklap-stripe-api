@@ -12,6 +12,20 @@ app.get("/", (req, res, next) => {
   });
 });
 
+app.get("/products/:id", async (req, res) => {
+  const product = await stripe.products.retrieve(req.params.id, {
+    expand: ["default_price"],
+  });
+
+  res.json({
+    name: product.name,
+    price: {
+      id: product.default_price.id,
+      value: product.default_price.unit_amount,
+    },
+  });
+});
+
 app.post("/create-checkout-session", async (req, res) => {
   const session = await stripe.checkout.sessions.create({
     line_items: [
@@ -25,7 +39,7 @@ app.post("/create-checkout-session", async (req, res) => {
     cancel_url: `${process.env.REDIRECT_BASEURL}?canceled=true`,
   });
 
-  res.redirect(303, session.url);
+  res.json({ url: session.url });
 });
 
 app.use((req, res, next) => {

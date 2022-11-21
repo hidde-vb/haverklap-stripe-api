@@ -10,5 +10,9 @@
   },
   "devDependencies": {
     "serverless-offline": "^11.3.0"
+  },
+  "scripts": {
+    "serve": "serverless offline",
+    "deploy": "serverless deploy"
   }
 }

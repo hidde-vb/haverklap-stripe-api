@@ -26,11 +26,11 @@ app.get("/products/:id", async (req, res) => {
   });
 });
 
-app.post("/create-checkout-session", async (req, res) => {
+app.post("/checkout/:id", async (req, res) => {
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
-        price: "price_1LzPqIJQikXYBFLjJquHa9my",
+        price: req.params.id,
         quantity: 1,
       },
     ],

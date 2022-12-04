@@ -3,12 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.17.1",
     "serverless-http": "^2.7.0",
     "stripe": "^10.17.0"
   },
   "devDependencies": {
+    "serverless-aws-function-url-custom-domain": "^0.9.25",
     "serverless-offline": "^11.3.0"
   },
   "scripts": {

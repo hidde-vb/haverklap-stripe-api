@@ -15,7 +15,7 @@ custom:
 functions:
   api:
     handler: handler.handler
-    # url: true
+    url: true
     events:
       - httpApi: '*'
 

@@ -2,12 +2,24 @@ require("dotenv").config();
 
 const serverless = require("serverless-http");
 const express = require("express");
+const cors = require("cors");
 const stripe = require("stripe")(process.env.STRIPE_KEY);
 
-const { createLineItem, createSession } = require('./src/checkout')
+const { createLineItem, createSession } = require("./src/checkout");
 
 const app = express();
 app.use(express.json());
+
+const allowlist = ["http://haverklapbloemen.be"];
+
+const corsOptions = function (req, callback) {
+  if (allowlist.indexOf(req.header("Origin")) !== -1) {
+    callback(null, { origin: true });
+  } else {
+    callback(null, { origin: false });
+  }
+};
+app.use(cors(corsOptions))
 
 app.get("/", (req, res, next) => {
   return res.status(200).json({
@@ -30,16 +42,18 @@ app.get("/products/:id", async (req, res) => {
 });
 
 app.post("/checkout", async (req, res) => {
-  const { cart } = req.body
-  const lineItems = cart.map(item => {
-    if(!item.id || !item.quantity) return;
-    console.log(item)
+  const { cart } = req.body;
+  const lineItems = cart.map((item) => {
+    if (!item.id || !item.quantity) return;
+    console.log(item);
     return createLineItem(item.id, item.quantity);
   });
 
-  console.log(lineItems)
+  console.log(lineItems);
 
-  const session = await stripe.checkout.sessions.create(createSession(lineItems));
+  const session = await stripe.checkout.sessions.create(
+    createSession(lineItems)
+  );
 
   res.json({ url: session.url });
 });
@@ -47,7 +61,9 @@ app.post("/checkout", async (req, res) => {
 app.post("/checkout/:id", async (req, res) => {
   const lineItems = [createLineItem(req.params.id)];
 
-  const session = await stripe.checkout.sessions.create(createSession(lineItems));
+  const session = await stripe.checkout.sessions.create(
+    createSession(lineItems)
+  );
 
   res.json({ url: session.url });
 });

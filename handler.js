@@ -19,7 +19,7 @@ const corsOptions = function (req, callback) {
     callback(null, { origin: false });
   }
 };
-app.use(cors(corsOptions))
+app.use(cors(corsOptions));
 
 app.get("/", (req, res, next) => {
   return res.status(200).json({
@@ -45,12 +45,8 @@ app.post("/checkout", async (req, res) => {
   const { cart } = req.body;
   const lineItems = cart.map((item) => {
     if (!item.id || !item.quantity) return;
-    console.log(item);
     return createLineItem(item.id, item.quantity);
   });
-
-  console.log(lineItems);
-
   const session = await stripe.checkout.sessions.create(
     createSession(lineItems)
   );

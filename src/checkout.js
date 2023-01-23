@@ -31,7 +31,7 @@ const createSession = (line_items = []) => ({
       shipping_rate_data: {
         type: "fixed_amount",
         fixed_amount: { amount: 400, currency: "eur" },
-        display_name: "Levering aan huis (enkel in Essen en Kalmthout)",
+        display_name: "Levering aan huis (binnen straal van 8km)",
         delivery_estimate: {
           minimum: { unit: "business_day", value: 3 },
           maximum: { unit: "business_day", value: 5 },

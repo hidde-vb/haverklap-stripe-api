@@ -5,6 +5,13 @@ provider:
   name: aws
   runtime: nodejs14.x
   region: us-east-1
+  iam:
+    role:
+      statements:
+        # Allow functions to list all buckets
+        - Effect: Allow
+          Action: "ses:SendEmail"
+          Resource: "*"
 
 functions:
   api:

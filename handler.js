@@ -63,7 +63,7 @@ app.post("/checkout", async (req, res) => {
     });
   }
 
-  if (message) await sendMail(message);
+  if (message) await sendMail(message, cart);
 
   const lineItems = cart.map((item) => {
     if (!item.id || !item.quantity) return;

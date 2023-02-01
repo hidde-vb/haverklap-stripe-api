@@ -1,6 +1,7 @@
+const { SendEmailCommand } = require("@aws-sdk/client-sesv2");
 const sesv2 = require("@aws-sdk/client-sesv2");
 
-const ses = new sesv2.SESv2Client(
+const sesClient = new sesv2.SESv2Client(
   !process.env.IS_OFFLINE
     ? {}
     : {
@@ -13,25 +14,51 @@ const ses = new sesv2.SESv2Client(
       }
 );
 
-const getCommand = (message) => ({
-  FromEmailAddress: "hiddevanbavel@hotmail.com",
-  Destination: { ToAddresses: ["hiddevanbavel@hotmail.com"] },
-  Content: {
-    Simple: {
-      Subject: { Data: "This is the subject" },
-      Body: { Text: { Data: "This is the email contents" } },
-    },
-  },
-});
+// yuck
+const formatMessage = (message, cart) => {
+  let data = `Bestelling\n\n${message} \n\n #  Product\n`;
+
+  cart.forEach((product) => {
+    data += ` ${product.quantity}  ${product.id}`;
+  });
+
+  return data;
+};
 
 /* Ideally replaced with a custom field in stripe */
-const sendMail = async (message) => {
-  const result = await ses.send(
-    new sesv2.SendEmailCommand(getCommand(message))
-  );
+const sendMail = async (message, cart) => {
+  const formattedMessage = formatMessage(message, cart);
+  const subject = "Bestelling | haverklapbloemen";
 
-  console.log(result);
-  return result;
+  const params = {
+    Content: {
+      Simple: {
+        Body: {
+          Text: {
+            Charset: "UTF-8",
+            Data: "test",
+          },
+        },
+        Subject: {
+          Charset: "UTF-8",
+          Data: formattedMessage,
+        },
+      },
+    },
+    Destination: {
+      ToAddresses: ["hiddevbavel@gmail.com"],
+    },
+    FromEmailAddress: "hiddevanbavel@hotmail.com",
+  };
+
+  try {
+    const result = await sesClient.send(new SendEmailCommand(params));
+
+    console.log(`send Mail`);
+    return result;
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 module.exports = { sendMail };

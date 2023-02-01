@@ -6,19 +6,22 @@ provider:
   runtime: nodejs14.x
   region: us-east-1
 
-custom:
-  urlDomain:
-    apiDomain: api.haverklapbloemen.be
-    hostedZoneName: haverklapbloemen.be.
-    certificateArn: "arn:aws:acm:us-east-1:189234377520:certificate/ec6f0e16-923e-45a3-959b-7bb01be571d7"
-
 functions:
   api:
     handler: handler.handler
     url: true
     events:
-      - httpApi: '*'
+      - httpApi: "*"
+
+custom:
+  urlDomain:
+    apiDomain: api.haverklapbloemen.be
+    hostedZoneName: haverklapbloemen.be.
+    certificateArn: "arn:aws:acm:us-east-1:189234377520:certificate/ec6f0e16-923e-45a3-959b-7bb01be571d7"
+  serverless-offline-ses-v2:
+    port: 8005
 
 plugins:
   - serverless-offline
+  - serverless-offline-ses-v2
   - serverless-aws-function-url-custom-domain

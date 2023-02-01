@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "dependencies": {
+    "@aws-sdk/client-sesv2": "^3.262.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.17.1",
@@ -11,10 +12,11 @@
   },
   "devDependencies": {
     "serverless-aws-function-url-custom-domain": "^0.9.25",
-    "serverless-offline": "^11.3.0"
+    "serverless-offline": "^11.3.0",
+    "serverless-offline-ses-v2": "^1.0.4"
   },
   "scripts": {
-    "serve": "serverless offline",
+    "serve": "serverless offline start",
     "deploy": "serverless deploy"
   }
 }

@@ -22,7 +22,7 @@ sls offline
 you can deploy with:
 
 ```
-sls deploy
+sls deploy function -f api --aws-profile personal
 ```
 
 ```bash

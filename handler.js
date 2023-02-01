@@ -6,8 +6,10 @@ const cors = require("cors");
 const stripe = require("stripe")(process.env.STRIPE_KEY);
 
 const { createLineItem, createSession } = require("./src/checkout");
+const { sendMail } = require("./src/email");
 
 const app = express();
+
 app.use(express.json());
 
 const allowlist = ["http://haverklapbloemen.be"];
@@ -19,7 +21,10 @@ const corsOptions = function (req, callback) {
     callback(null, { origin: false });
   }
 };
+
 app.use(cors(corsOptions));
+
+/* Endpoints */
 
 app.get("/", (req, res, next) => {
   return res.status(200).json({
@@ -28,7 +33,15 @@ app.get("/", (req, res, next) => {
 });
 
 app.get("/products/:id", async (req, res) => {
-  const product = await stripe.products.retrieve(req.params.id, {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({
+      message: "Error: missing id",
+    });
+  }
+
+  const product = await stripe.products.retrieve(id, {
     expand: ["default_price"],
   });
 
@@ -42,11 +55,21 @@ app.get("/products/:id", async (req, res) => {
 });
 
 app.post("/checkout", async (req, res) => {
-  const { cart } = req.body;
+  const { cart, message } = req.body;
+
+  if (!cart) {
+    return res.status(400).json({
+      message: "Error: missing cart",
+    });
+  }
+
+  if (message) await sendMail(message);
+
   const lineItems = cart.map((item) => {
     if (!item.id || !item.quantity) return;
     return createLineItem(item.id, item.quantity);
   });
+
   const session = await stripe.checkout.sessions.create(
     createSession(lineItems)
   );

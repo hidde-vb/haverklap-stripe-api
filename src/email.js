@@ -36,12 +36,12 @@ const sendMail = async (message, cart) => {
         Body: {
           Text: {
             Charset: "UTF-8",
-            Data: "test",
+            Data: formattedMessage,
           },
         },
         Subject: {
           Charset: "UTF-8",
-          Data: formattedMessage,
+          Data: "Haverklap | Bestelling",
         },
       },
     },

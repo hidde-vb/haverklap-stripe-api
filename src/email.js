@@ -14,7 +14,8 @@ const sesClient = new sesv2.SESv2Client(
       }
 );
 
-// yuck
+// Yuck
+// Could use some templating spice
 const formatMessage = (message, cart) => {
   let data = `Bestelling\n\n${message} \n\n #  Product\n`;
 
@@ -46,9 +47,9 @@ const sendMail = async (message, cart) => {
       },
     },
     Destination: {
-      ToAddresses: ["hiddevbavel@gmail.com"],
+      ToAddresses: [process.env.TO_ADDRESS],
     },
-    FromEmailAddress: "hiddevanbavel@hotmail.com",
+    FromEmailAddress: process.env.FROM_ADDRESS,
   };
 
   try {

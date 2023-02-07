@@ -26,10 +26,37 @@ app.use(cors(corsOptions));
 
 /* Endpoints */
 
-app.get("/", (req, res, next) => {
+app.get("/", (req, res) => {
   return res.status(200).json({
     message: "Alive",
   });
+});
+
+app.get("/coupon/:id", async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({
+      message: "Error: missing id",
+    });
+  }
+
+  try {
+    const coupon = await stripe.coupons.retrieve(id);
+
+    if (coupon.valid) {
+      return res.status(200).json({
+        message: "ok",
+      });
+    }
+    return res.status(200).json({
+      message: "coupon not valid",
+    });
+  } catch (e) {
+    return res.status(404).json({
+      message: e.message,
+    });
+  }
 });
 
 app.get("/products/:id", async (req, res) => {
@@ -55,7 +82,7 @@ app.get("/products/:id", async (req, res) => {
 });
 
 app.post("/checkout", async (req, res) => {
-  const { cart, message } = req.body;
+  const { cart, message, coupon } = req.body;
 
   if (!cart) {
     return res.status(400).json({
@@ -71,7 +98,7 @@ app.post("/checkout", async (req, res) => {
   });
 
   const session = await stripe.checkout.sessions.create(
-    createSession(lineItems)
+    createSession({ lineItems, coupon })
   );
 
   res.json({ url: session.url });
@@ -81,7 +108,7 @@ app.post("/checkout/:id", async (req, res) => {
   const lineItems = [createLineItem(req.params.id)];
 
   const session = await stripe.checkout.sessions.create(
-    createSession(lineItems)
+    createSession({ lineItems })
   );
 
   res.json({ url: session.url });
